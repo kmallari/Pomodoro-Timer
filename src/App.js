@@ -1,70 +1,82 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Config from "./Config";
 import Timer from "./Timer";
+import Heartbeat from "./Heartbeat";
 import "./App.css";
 
 function App() {
+  // console.clear();
   const [rest, setRest] = useState(5);
   const [work, setWork] = useState(25);
+  const [sessionType, setSessionType] = useState("work");
+  const [timer, setTimer] = useState(work * 60);
   const [started, setStarted] = useState(false);
-  const [time, setTime] = useState({ minutes: work, seconds: 0 });
 
-  // for incrementing/decremting the rest/work timer
-  const incrementRest = () => {
-    if (rest < 60 && !started) {
-      setRest((rest) => rest + 1);
-      setTime({...time, seconds: 0})
-    }
-  };
-  const incrementWork = () => {
-    if (work < 60 && !started) {
+  useEffect(() => {
+    setTimer(work * 60);
+  }, [work]);
+
+  // for incrementing and decrementing timer
+  const incrementTimer = (e) => {
+    if (started) return;
+    if (e.target.id === "session-increment") {
       setWork((work) => work + 1);
-      setTime({...time, seconds: 0})
+    } else if (e.target.id === "break-increment") {
+      setRest((rest) => rest + 1);
     }
   };
-  const decrementRest = () => {
-    if (rest > 0 && !started) {
-      setRest((rest) => rest - 1);
-      setTime({...time, seconds: 0})
-    }
-  };
-  const decrementWork = () => {
-    if (work > 0 && !started) {
+
+  const decrementTimer = (e) => {
+    if (started) return;
+    if (e.target.id === "session-decrement") {
       setWork((work) => work - 1);
-      setTime({...time, seconds: 0})
+    } else if (e.target.id === "break-decrement") {
+      setRest((rest) => rest - 1);
     }
   };
 
   // buttton control
-  const handleStart = () => {
+  const handleStartStop = () => {
     setStarted(!started);
   };
 
   const handleReset = () => {
-    setStarted(false);
-    setTime({minutes: 25, seconds: 0})
-    setRest(5);
     setWork(25);
-  }
+    setRest(5);
+    setStarted(false);
+    setTimer(work * 60);
+  };
 
-  var timer = accurateInterval(function() {
-    console.log("MESSAGE EVERY SECOND")
-  }, 1000)
+  const countdown = () => {
+    setTimer((timer) => timer - 1);
+    if (timer === 0) {
+      if (sessionType === "work") {
+        setSessionType("rest");
+        setTimer(rest * 60);
+      } else {
+        setSessionType("work");
+        setTimer(work * 60);
+      }
+    }
+  };
+
+  const timerHeartbeat = !started ? null : (
+    <Heartbeat heartbeatFunction={countdown} heartbeatInterval={100} />
+  );
 
   return (
     <div>
+      {timerHeartbeat}
       <Config
         rest={rest}
         work={work}
-        incrementRest={incrementRest}
-        incrementWork={incrementWork}
-        decrementRest={decrementRest}
-        decrementWork={decrementWork}
-        handleStart={handleStart}
+        incrementTimer={incrementTimer}
+        decrementTimer={decrementTimer}
+        handleStartStop={handleStartStop}
         started={started}
         handleReset={handleReset}
       />
-      <Timer work={work} rest={rest} started={started} time={time} setTime={setTime} />
+      <Timer timer={timer} />
     </div>
   );
 }

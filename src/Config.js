@@ -5,36 +5,34 @@ import { TiRefresh } from "react-icons/ti";
 const Config = ({
   rest,
   work,
-  incrementRest,
-  incrementWork,
-  decrementRest,
-  decrementWork,
-  handleStart,
+  incrementTimer,
+  decrementTimer,
+  handleStartStop,
   started,
-  handleReset
+  handleReset,
 }) => {
   return (
     <div>
       <div id="break-label">
-        <button id="break-increment" onClick={incrementRest}>
+        <button id="break-increment" label="rest" onClick={incrementTimer}>
           ^
         </button>
         <div id="break-length">Rest {rest}</div>
-        <button id="break-decrement" onClick={decrementRest}>
+        <button id="break-decrement" label="rest" onClick={decrementTimer}>
           v
         </button>
       </div>
       <div id="session-label">
-        <button id="session-increment" onClick={incrementWork}>
+        <button id="session-increment" onClick={incrementTimer}>
           ^
         </button>
         <div id="work-length">Work {work}</div>
-        <button id="session-decrement" onClick={decrementWork}>
+        <button id="session-decrement" onClick={decrementTimer}>
           v
         </button>
       </div>
       <div>
-        <button id="start_stop" onClick={handleStart}>
+        <button id="start_stop" onClick={handleStartStop}>
           {/* insert conditional statement here for pause and play */}
           {!started ? <TiMediaPlayOutline /> : <TiMediaPauseOutline />}
         </button>
