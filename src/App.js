@@ -69,7 +69,7 @@ function App() {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center">
+    <div className="flex flex-col items-center justify-center mt-20">
       {timerHeartbeat}
       <Timer timer={timer} />
       <Config
@@ -81,6 +81,7 @@ function App() {
         started={started}
         handleReset={handleReset}
       />
+      <footer className="relative top-80">Made by ©<a href="https://github.com/kmallari/" className="font-semibold hover:text-blue-600 transition-all">kmallari</a>.</footer>
     </div>
   );
 }
