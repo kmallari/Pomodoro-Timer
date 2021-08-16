@@ -19,18 +19,22 @@ function App() {
   // for incrementing and decrementing timer
   const incrementTimer = (e) => {
     if (started) return;
-    if (e.target.id === "session-increment") {
+    if (e.currentTarget.id === "session-increment") {
+      if (work >= 60) return
       setWork((work) => work + 1);
-    } else if (e.target.id === "break-increment") {
+    } else if (e.currentTarget.id === "break-increment") {
+      if (rest >= 60) return
       setRest((rest) => rest + 1);
     }
   };
 
   const decrementTimer = (e) => {
     if (started) return;
-    if (e.target.id === "session-decrement") {
+    if (e.currentTarget.id === "session-decrement") {
+      if (work <= 1) return
       setWork((work) => work - 1);
-    } else if (e.target.id === "break-decrement") {
+    } else if (e.currentTarget.id === "break-decrement") {
+      if (rest <= 1) return
       setRest((rest) => rest - 1);
     }
   };
@@ -61,12 +65,13 @@ function App() {
   };
 
   const timerHeartbeat = !started ? null : (
-    <Heartbeat heartbeatFunction={countdown} heartbeatInterval={100} />
+    <Heartbeat heartbeatFunction={countdown} />
   );
 
   return (
-    <div>
+    <div className="flex flex-col lg:flex-row items-center justify-center">
       {timerHeartbeat}
+      <Timer timer={timer} />
       <Config
         rest={rest}
         work={work}
@@ -76,7 +81,6 @@ function App() {
         started={started}
         handleReset={handleReset}
       />
-      <Timer timer={timer} />
     </div>
   );
 }
